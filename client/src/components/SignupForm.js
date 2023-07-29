@@ -13,7 +13,7 @@ const SignupForm = () => {
   // set state for alert
   const [showAlert, setShowAlert] = useState(false);
 
-  const [addUser, { error }] = useMutation(ADD_USER);
+  const [addUser, { error, data }] = useMutation(ADD_USER);
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -57,14 +57,13 @@ const SignupForm = () => {
     <>
       {/* This is needed for the validation functionality above */}
       <Form noValidate validated={validated} onSubmit={handleFormSubmit}>
+
         {/* show alert if server response is bad */}
+        {error && (
         <Alert dismissible onClose={() => setShowAlert(false)} show={showAlert} variant='danger'>
           Something went wrong with your signup!
+          {error.message}
         </Alert>
-        {error && (
-          <Alert dismissible onClose={() => setShowAlert(false)} show={showAlert} variant='danger'>
-            {error.message}
-          </Alert>
         )}
         <Form.Group className='mb-3'>
           <Form.Label htmlFor='username'>Username</Form.Label>

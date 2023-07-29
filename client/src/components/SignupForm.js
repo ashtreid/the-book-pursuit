@@ -13,7 +13,7 @@ const SignupForm = () => {
   // set state for alert
   const [showAlert, setShowAlert] = useState(false);
 
-  const [addUser, { error, data }] = useMutation(ADD_USER);
+  const [addUser, { error }] = useMutation(ADD_USER);
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -22,6 +22,8 @@ const SignupForm = () => {
 
   const handleFormSubmit = async (event) => {
     event.preventDefault();
+
+    console.log('user form data', userFormData);
 
     // check if form has everything (as per react-bootstrap docs)
     const form = event.currentTarget;
@@ -35,12 +37,13 @@ const SignupForm = () => {
         variables: { ...userFormData },
       });
 
-      // Handle the successful mutation here
-      if (data) {
-        const { token } = data.addUser;
-        Auth.login(token);
-      }
+      // // Handle the successful mutation here
+      // if (data) {
+      //   const { token } = data.addUser;
+      //   Auth.login(token);
+      // }
 
+      Auth.login(data.addUser.token);
     } catch (err) {
       console.error(err);
       setShowAlert(true);
@@ -57,11 +60,10 @@ const SignupForm = () => {
     <>
       {/* This is needed for the validation functionality above */}
       <Form noValidate validated={validated} onSubmit={handleFormSubmit}>
-
         {/* show alert if server response is bad */}
         {error && (
         <Alert dismissible onClose={() => setShowAlert(false)} show={showAlert} variant='danger'>
-          Something went wrong with your signup!
+          <p>Something went wrong with your signup!</p>
           {error.message}
         </Alert>
         )}

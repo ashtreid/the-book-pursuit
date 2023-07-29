@@ -38,13 +38,14 @@ const resolvers = {
 
             return { token, user };
         },
-        saveBook: async (parent, { bookId }, context) => {
+        saveBook: async (parent, input, context) => {
             if (context.user) {
                 return User.findOneAndUpdate(
                     {_id: context.user._id},
-                    { $addToSet: { savedBooks: bookId } },
+                    { $addToSet: { savedBooks: input } },
                     { new: true, runValidators: true }
-                ).populate('savedBooks');
+                )
+                // .populate('savedBooks');
             }
             throw new AuthenticationError('But first, log in.')
         },

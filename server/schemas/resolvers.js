@@ -38,6 +38,26 @@ const resolvers = {
 
             return { token, user };
         },
+        saveBook: async (parent, { bookId }, context) => {
+            if (context.user) {
+                return User.findOneAndUpdate(
+                    {_id: context.user._id},
+                    { $addToSet: { savedBooks: bookId } },
+                    { new: true, runValidators: true }
+                ).populate('savedBooks');
+            }
+            throw new AuthenticationError('But first, log in.')
+        },
+        removeBook: async (parent, { bookId }, context) => {
+            if (context.user) {
+                return User.findOneAndUpdate(
+                    { _id: context.user._id },
+                    { $pull: { savedBooks: bookId } },
+                    { new: true }
+                );
+            }
+            throw new AuthenticationError('Gotta login')
+        },
     },
 };
 
